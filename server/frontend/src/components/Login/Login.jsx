@@ -1,74 +1,50 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { request } from "../../api";
 
-import "./Login.css";
-import Header from '../Header/Header';
+export default function Login({ onAuthenticated }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
 
-const Login = ({ onClose }) => {
-
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
-  const [open,setOpen] = useState(true)
-
-  let login_url = window.location.origin+"/djangoapp/login";
-
-  const login = async (e) => {
-    e.preventDefault();
-
-    const res = await fetch(login_url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "userName": userName,
-            "password": password
-        }),
-    });
-    
-    const json = await res.json();
-    if (json.status != null && json.status === "Authenticated") {
-        sessionStorage.setItem('username', json.userName);
-        setOpen(false);        
+  async function login(event) {
+    event.preventDefault();
+    setBusy(true);
+    setError("");
+    const form = new FormData(event.currentTarget);
+    try {
+      await request("/login", {
+        data: { userName: form.get("userName").trim(), password: form.get("password") },
+      });
+      await onAuthenticated();
+      navigate(location.state?.returnTo || "/dealers", { replace: true });
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setBusy(false);
     }
-    else {
-      alert("The user could not be authenticated.")
-    }
-};
-
-  if (!open) {
-    window.location.href = "/";
-  };
-  
+  }
 
   return (
-    <div>
-      <Header/>
-    <div onClick={onClose}>
-      <div
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-        className='modalContainer'
-      >
-          <form className="login_panel" style={{}} onSubmit={login}>
-              <div>
-              <span className="input_field">Username </span>
-              <input type="text"  name="username" placeholder="Username" className="input_field" onChange={(e) => setUserName(e.target.value)}/>
-              </div>
-              <div>
-              <span className="input_field">Password </span>
-              <input name="psw" type="password"  placeholder="Password" className="input_field" onChange={(e) => setPassword(e.target.value)}/>            
-              </div>
-              <div>
-              <input className="action_button" type="submit" value="Login"/>
-              <input className="action_button" type="button" value="Cancel" onClick={()=>setOpen(false)}/>
-              </div>
-              <a className="loginlink" href="/register">Register Now</a>
-          </form>
-      </div>
-    </div>
-    </div>
+    <section className="form-card auth-card">
+      <h1>Log in</h1>
+      <p className="muted">Sign in to write dealer reviews.</p>
+      <form onSubmit={login}>
+        <label>
+          Username
+          <input name="userName" autoComplete="username" required maxLength={150} />
+        </label>
+        <label>
+          Password
+          <input name="password" type="password" autoComplete="current-password" required />
+        </label>
+        {error && <p className="notice error" role="alert">{error}</p>}
+        <button className="btn" type="submit" disabled={busy}>
+          {busy ? "Signing in…" : "Login"}
+        </button>
+      </form>
+      <p className="form-footer">New here? <Link to="/register">Register for an account</Link>.</p>
+    </section>
   );
-};
-
-export default Login;
+}

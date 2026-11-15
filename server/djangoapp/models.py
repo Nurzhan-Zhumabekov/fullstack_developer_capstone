@@ -1,25 +1,53 @@
-# Uncomment the following imports before adding the Model code
+from typing import ClassVar
 
-# from django.db import models
-# from django.utils.timezone import now
-# from django.core.validators import MaxValueValidator, MinValueValidator
-
-
-# Create your models here.
-
-# <HINT> Create a Car Make model `class CarMake(models.Model)`:
-# - Name
-# - Description
-# - Any other fields you would like to include in car make model
-# - __str__ method to print a car make object
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.utils import timezone
 
 
-# <HINT> Create a Car Model model `class CarModel(models.Model):`:
-# - Many-To-One relationship to Car Make model (One Car Make has many
-# Car Models, using ForeignKey field)
-# - Name
-# - Type (CharField with a choices argument to provide limited choices
-# such as Sedan, SUV, WAGON, etc.)
-# - Year (IntegerField) with min value 2015 and max value 2023
-# - Any other fields you would like to include in car model
-# - __str__ method to print a car make object
+def max_model_year():
+    return timezone.now().year + 1
+
+
+class CarMake(models.Model):
+    name = models.CharField(max_length=80, unique=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ("name",)
+
+    def __str__(self):
+        return self.name
+
+
+class CarModel(models.Model):
+    class BodyType(models.TextChoices):
+        CONVERTIBLE = "Convertible"
+        COUPE = "Coupe"
+        HATCHBACK = "Hatchback"
+        MINIVAN = "Minivan"
+        PICKUP = "Pickup"
+        SEDAN = "Sedan"
+        SUV = "SUV"
+        WAGON = "Wagon"
+
+    car_make = models.ForeignKey(
+        CarMake, related_name="models", on_delete=models.PROTECT
+    )
+    name = models.CharField(max_length=80)
+    type = models.CharField(max_length=16, choices=BodyType.choices)
+    year = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(2015), MaxValueValidator(max_model_year)],
+    )
+
+    class Meta:
+        ordering = ("car_make__name", "name", "-year", "type")
+        constraints: ClassVar[list[models.BaseConstraint]] = [
+            models.UniqueConstraint(
+                fields=("car_make", "name", "type", "year"),
+                name="unique_car_make_model_type_year",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.car_make} {self.name} ({self.year})"

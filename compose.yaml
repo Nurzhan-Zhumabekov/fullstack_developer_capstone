@@ -1,0 +1,58 @@
+name: ibm-fullstack-dealership
+services:
+  mongo:
+    image: mongo:8.0
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+  database:
+    build: ./server/database
+    environment:
+      MONGODB_URI: mongodb://mongo:27017
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:3030:3030"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3030/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+  sentiment:
+    build: ./server/djangoapp/microservices
+    ports:
+      - "127.0.0.1:5050:5050"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://localhost:5050/health', timeout=3).close()"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+  django:
+    build: .
+    environment:
+      DJANGO_DEBUG: "0"
+      DJANGO_LOCAL: "1"
+      DEALERS_API_URL: http://database:3030
+      SENTIMENT_API_URL: http://sentiment:5050
+    ports:
+      - "127.0.0.1:${DJANGO_HOST_PORT:-8000}:8000"
+    volumes:
+      - django-data:/data
+    depends_on:
+      database:
+        condition: service_healthy
+      sentiment:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://localhost:8000/health', timeout=3).close()"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+volumes:
+  mongo-data:
+  django-data:

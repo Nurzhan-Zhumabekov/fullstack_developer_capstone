@@ -1,68 +1,61 @@
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <!-- Link the style sheet here -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/style.css">
+  <script defer src="/static/site-session.js"></script>
+  <title>About | Dealerships</title>
 </head>
-<div>
-  <nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise; height: 1in;">
-    <div class="container-fluid">
-      <h2 style="padding-right: 5%;">Dealerships</h2>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" style="font-size: larger;" aria-current="page" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" style="font-size: larger;" href="/about">About Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" style="font-size: larger;" href="/contact">Contact Us</a>
-          </li>
-        </ul>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav-shell" aria-label="Main navigation">
+      <a class="brand" href="/">Dealerships</a>
+      <div class="primary-links">
+        <a href="/">Home</a>
+        <a href="/about" aria-current="page">About Us</a>
+        <a href="/contact">Contact Us</a>
+        <a href="/dealers">Dealers</a>
       </div>
+      <div class="account-links" data-account-links>
+        <a href="/login">Login</a>
+        <a class="btn subtle" href="/register">Register</a>
+      </div>
+    </nav>
+  </header>
+  <main id="content" class="page">
+    <div class="section-intro">
+      <h1>About Us</h1>
+      <p>Dealerships brings vehicle buyers and local dealers together. Use the directory to find locations by state, compare customer experiences, and share your own review.</p>
     </div>
-  </nav>
-  
-    <div class="card" style="width: 80%;margin: auto; margin-top:5%;">
-      <div class="banner" name="about-header">
-      <!-- Insert header information here -->
+    <section aria-labelledby="team-title">
+      <h2 id="team-title">Our team</h2>
+      <div class="team-grid">
+        <article class="team-card">
+          <img src="/static/person.png" alt="" width="68" height="68">
+          <h3>Alex Morgan</h3>
+          <p><strong>Sales manager</strong></p>
+          <p>Helps buyers compare vehicles and understand their options before visiting a dealer.</p>
+          <a href="mailto:sales@example.com">sales@example.com</a>
+        </article>
+        <article class="team-card">
+          <img src="/static/person.png" alt="" width="68" height="68">
+          <h3>Riley Chen</h3>
+          <p><strong>Customer care lead</strong></p>
+          <p>Answers questions about dealer listings, accounts, and sharing a review.</p>
+          <a href="mailto:support@example.com">support@example.com</a>
+        </article>
+        <article class="team-card">
+          <img src="/static/person.png" alt="" width="68" height="68">
+          <h3>Jordan Patel</h3>
+          <p><strong>Operations manager</strong></p>
+          <p>Coordinates the directory and keeps location details organized.</p>
+          <a href="mailto:operations@example.com">operations@example.com</a>
+        </article>
       </div>
-      <div style="display: flex;flex-direction: row; margin:auto">
-      <div class="card" style="width: 30%;">
-        <img class="card-img-top" src="/static/person.png" alt="Card image">
-        <div class="card-body">
-          <p class="title">Person1</p>
-          <p>Person1 Title</p>
-          <p class="card-text">Some text that explains the person1 in about 2 short sentences</p>
-          <p>person1@example.com</p>
-        </div>
-      </div>
-
-      <div class="card" style="width: 30%;">
-        <img class="card-img-top" src="/static/person.png" alt="Card image">
-        <div class="card-body">
-          <p class="title">Person2</p>
-          <p>Person2 Title</p>
-          <p class="card-text">Some text that explains the person2 in about 2 short sentences</p>
-          <p>person2@example.com</p>
-        </div>
-      </div>
-
-      <div class="card" style="width: 30%;">
-        <img class="card-img-top" src="/static/person.png" alt="Card image">
-        <div class="card-body">
-          <p class="title">Person3</p>
-          <p>Person3 Title</p>
-          <p class="card-text">Some text that explains the person3 in about 2 short sentences</p>
-          <p>person3@example.com</p>
-        </div>
-      </div>
-    </div>
-    </div>
-    </div>
-    
-</div>
-
+      <p class="muted">Team details are examples for this demo.</p>
+    </section>
+  </main>
+</body>
 </html>

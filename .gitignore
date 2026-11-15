@@ -1,4 +1,8 @@
 # Byte-compiled / optimized / DLL files
+evidence/
+node_modules/
+staticfiles/
+.ruff_cache/
 __pycache__/
 *.py[cod]
 *$py.class
